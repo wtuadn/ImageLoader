@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import java.util.List;
+
 /**
  * Created by wtuadn on 2018/2/10.
  */
@@ -26,5 +28,9 @@ public class LoadOption {
     public boolean skipMemory;
     public boolean autoPlay = true;//如果是gif的话自动播放
     public boolean asBitmap;
-    // TODO: 2018/3/9 添加统一对bitmap变换的接口
+    public List<BitmapTransformation> transformationList;
+    public boolean isCircle;
+    public int roundCornerRadius;
+    public float blurSampleSize;//高斯模糊时先将原图缩小多少倍
+    public int blurRadius;//高斯模糊采样半径
 }
