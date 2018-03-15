@@ -4,6 +4,7 @@ buildscript {
     ext.compileSdkExt = 26
     ext.minSdkExt = 14
     ext.targetSdkExt = 26
+    ext.supportLibExt = '26.1.0'
 
     repositories {
         google()
