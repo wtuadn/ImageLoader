@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':base')
+//    implementation project(':base')
     implementation project(':glideloader')
     implementation project(':frescoloader')
     testImplementation 'junit:junit:4.12'

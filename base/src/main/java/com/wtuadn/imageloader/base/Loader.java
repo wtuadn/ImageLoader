@@ -1,13 +1,16 @@
 package com.wtuadn.imageloader.base;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 /**
  * Created by wtuadn on 2018/2/10.
  */
 
 public interface Loader {
-    void resume();
+    void resume(@NonNull Context context);
 
-    void pause();
+    void pause(@NonNull Context context);
 
     void clearDiskCache();
 
@@ -17,5 +20,5 @@ public interface Loader {
 
     void onLowMemory();
 
-    void load(LoadConfig loadOption);
+    void load(@NonNull LoadConfig loadConfig);
 }

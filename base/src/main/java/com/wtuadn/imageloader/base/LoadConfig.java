@@ -32,7 +32,7 @@ public class LoadConfig {
     public Context context;
     public String url;
     public File file;
-    public int resId;
+    public int resId = Integer.MIN_VALUE;
     public Uri uri;
     public int placeholderResId = Integer.MIN_VALUE;
     public Drawable placeholderDrawable;
@@ -47,6 +47,7 @@ public class LoadConfig {
     public int roundCornerRadius;//圆角图片，支持placeholder和error，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
     public float blurSampleSize;//高斯模糊时先将原图缩小多少倍
     public int blurRadius;//高斯模糊采样半径
+    public int fadeDuration;//透明渐变动画时长，0为关闭动画
     public List<BitmapTransformation> transformationList;
     public LoadListener loadListener;
     public ImageView targetView;
@@ -138,8 +139,13 @@ public class LoadConfig {
         return this;
     }
 
+    public LoadConfig fadeDuration(int fadeDuration) {
+        this.fadeDuration = fadeDuration;
+        return this;
+    }
+
     public LoadConfig addTransform(BitmapTransformation bitmapTransformation) {
-        if (transformationList == null) transformationList = new ArrayList<>(2);
+        if (transformationList == null) transformationList = new ArrayList<>(1);
         transformationList.add(bitmapTransformation);
         return this;
     }
