@@ -4,7 +4,7 @@ android {
     compileSdkVersion compileSdkExt
 
     defaultConfig {
-        applicationId "com.wtuadn.imageloader"
+        applicationId "com.wtuadn.demo.imageloader"
         minSdkVersion minSdkExt
         targetSdkVersion targetSdkExt
         versionCode 1

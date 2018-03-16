@@ -34,12 +34,12 @@ public class ImageLoader {
         return new LoadConfig().with(context);
     }
 
-    public static void resume() {
-        getLoader().resume();
+    public static void resume(Context context) {
+        getLoader().resume(context);
     }
 
-    public static void pause() {
-        getLoader().pause();
+    public static void pause(Context context) {
+        getLoader().pause(context);
     }
 
     public static void clearDiskCache() {

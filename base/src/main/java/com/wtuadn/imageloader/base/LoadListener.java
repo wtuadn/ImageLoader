@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
  * Created by wtuadn on 2018/3/14.
  */
 
-public class LoadListener {
+public abstract class LoadListener {
     public final boolean returnBitmap;
 
     /**
@@ -16,9 +16,7 @@ public class LoadListener {
         this.returnBitmap = returnBitmap;
     }
 
-    public void onSuccess(Bitmap bitmap) {
-    }
+    public abstract void onSuccess(Bitmap bitmap);
 
-    public void onFail() {
-    }
+    public abstract void onFail() ;
 }

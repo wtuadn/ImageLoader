@@ -1,11 +1,15 @@
 package com.wtuadn.imageloader.base;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
+
+import com.wtuadn.imageloader.base.transforms.BitmapTransformation;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -39,16 +43,17 @@ public class LoadConfig {
     public int errorResId = Integer.MIN_VALUE;
     public Drawable errorDrawable;
     public int diskCache = DISK_CACHE_DEFAULT;//磁盘缓存策略，glide支持所有，fresco只支持有和没有两种
+    public Bitmap.Config format;//针对该次请求使用config，只支持RGB_565、ARGB_8888
     public ImageView.ScaleType scaleType;//除了对图片做变换，同时也会修改ImageView的ScaleType
     public boolean skipMemory;//跳过内存缓存,fresco无效
     public boolean asBitmap;//为true的话gif不会自动播放
-    public int width, height;//期望获得的图片宽高
+    public int width, height;//期望获得的图片宽高,负值表示按原图大小加载
     public boolean isCircle;//圆形图片，支持placeholder和error，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
     public int roundCornerRadius;//圆角图片，支持placeholder和error，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
-    public float blurSampleSize;//高斯模糊时先将原图缩小多少倍
+    public float blurSampleSize;//高斯模糊时将原图缩小多少倍，可以节省内存，提高效率，不过会影响生成的图片大小，在使用CENTER_INSIDE之类的不会缩放小图的ScaleType时，请填1
     public int blurRadius;//高斯模糊采样半径
-    public int fadeDuration;//透明渐变动画时长，0为关闭动画
-    public List<BitmapTransformation> transformationList;
+    public int fadeDuration = 300;//透明渐变动画时长，0为关闭动画
+    public List<BitmapTransformation> transformationList;//fresco动图不支持变换
     public LoadListener loadListener;
     public ImageView targetView;
 
@@ -102,6 +107,11 @@ public class LoadConfig {
         return this;
     }
 
+    public LoadConfig format(Bitmap.Config format) {
+        this.format = format;
+        return this;
+    }
+
     public LoadConfig scaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
         return this;
@@ -123,12 +133,12 @@ public class LoadConfig {
         return this;
     }
 
-    public LoadConfig isCircle(boolean isCircle) {
+    public LoadConfig circle(boolean isCircle) {
         this.isCircle = isCircle;
         return this;
     }
 
-    public LoadConfig roundCornerRadius(int roundCornerRadius) {
+    public LoadConfig round(int roundCornerRadius) {
         this.roundCornerRadius = roundCornerRadius;
         return this;
     }
@@ -144,7 +154,7 @@ public class LoadConfig {
         return this;
     }
 
-    public LoadConfig addTransform(BitmapTransformation bitmapTransformation) {
+    public LoadConfig addTransform(@NonNull BitmapTransformation bitmapTransformation) {
         if (transformationList == null) transformationList = new ArrayList<>(1);
         transformationList.add(bitmapTransformation);
         return this;
@@ -155,7 +165,7 @@ public class LoadConfig {
         return this;
     }
 
-    public void into(ImageView targetView) {
+    public void into(@Nullable ImageView targetView) {
         this.targetView = targetView;
         ImageLoader.getLoader().load(this);
     }
