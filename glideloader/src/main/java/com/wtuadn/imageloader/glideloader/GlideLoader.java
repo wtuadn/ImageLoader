@@ -16,11 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,6 +27,8 @@ import com.wtuadn.imageloader.base.LoadConfig;
 import com.wtuadn.imageloader.base.Loader;
 import com.wtuadn.imageloader.base.transforms.BitmapTransformation;
 import com.wtuadn.imageloader.base.transforms.BlurTransformation;
+import com.wtuadn.imageloader.base.transforms.CircleTransformation;
+import com.wtuadn.imageloader.base.transforms.RoundTransformation;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -134,34 +131,20 @@ public class GlideLoader implements Loader {
             requestOptions = requestOptions.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
         }
 
+        if (loadConfig.scaleType != null && loadConfig.targetView != null) {
+            loadConfig.targetView.setScaleType(loadConfig.scaleType);
+        }
+
         List<Transformation> list = new ArrayList<>(3);
         if (loadConfig.blurRadius > 0) {
             list.add(new TransformationWrapper(new BlurTransformation(loadConfig.blurSampleSize, loadConfig.blurRadius)));
         }
-        if (loadConfig.scaleType != null) {// TODO: 2018/3/16 根据scaleType优化圆形圆角操作，合并transformation
-            if (loadConfig.targetView != null) loadConfig.targetView.setScaleType(loadConfig.scaleType);
-            switch (loadConfig.scaleType) {
-                case CENTER_CROP:
-                    list.add(new CenterCrop());
-                    break;
-                case CENTER_INSIDE:
-                case FIT_XY:
-                    list.add(new CenterInside());
-                    break;
-                case FIT_CENTER:
-                case FIT_START:
-                case FIT_END:
-                    list.add(new FitCenter());
-                    break;
-                case CENTER:
-                case MATRIX:
-                default:
-            }
-        }
         if (loadConfig.isCircle) {
-            list.add(new CircleCrop());
+            list.add(new TransformationWrapper(new CircleTransformation(loadConfig.scaleType)));
         } else if (loadConfig.roundCornerRadius > 0) {
-            list.add(new RoundedCorners(loadConfig.roundCornerRadius));
+            list.add(new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadius)));
+        } else if (loadConfig.roundCornerRadii != null && loadConfig.roundCornerRadii.length == 8) {
+            list.add(new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadii)));
         }
         if (loadConfig.transformationList != null) {
             for (int i = 0; i < loadConfig.transformationList.size(); ++i) {

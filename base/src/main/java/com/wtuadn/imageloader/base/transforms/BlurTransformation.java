@@ -29,31 +29,31 @@ public class BlurTransformation extends BitmapTransformation {
         int scaledHeight = (int) (height / blurSampleSize);
 
         Bitmap.Config config = toTransform.getConfig() != null ? toTransform.getConfig() : Bitmap.Config.ARGB_8888;
-        Bitmap toReuse = getReuseableBitmap(scaledWidth, scaledHeight, config);
-        if (toReuse == null || toReuse.getWidth() != scaledWidth || toReuse.getHeight() != scaledHeight) {
-            toReuse = Bitmap.createBitmap(scaledWidth, scaledHeight, config);
+        Bitmap result = getReuseableBitmap(scaledWidth, scaledHeight, config);
+        if (result == null || result.getWidth() != scaledWidth || result.getHeight() != scaledHeight) {
+            result = Bitmap.createBitmap(scaledWidth, scaledHeight, config);
         }
 
-        Canvas canvas = new Canvas(toReuse);
+        Canvas canvas = new Canvas(result);
         canvas.scale(1 / blurSampleSize, 1 / blurSampleSize);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
         canvas.drawBitmap(toTransform, 0, 0, paint);
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 try {
-                    toReuse = RSBlur.blur(ImageLoader.getContext(), toReuse, blurRadius);
+                    result = RSBlur.blur(ImageLoader.getContext(), result, blurRadius);
                 } catch (RSRuntimeException e) {
-                    toReuse = FastBlur.blur(toReuse, blurRadius, true);
+                    result = FastBlur.blur(result, blurRadius, true);
                 }
             } else {
-                toReuse = FastBlur.blur(toReuse, blurRadius, true);
+                result = FastBlur.blur(result, blurRadius, true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return toReuse;
+        canvas.setBitmap(null);
+        return result;
     }
 
     @Override
