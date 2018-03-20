@@ -31,16 +31,17 @@ public class MainActivity extends Activity {
 
         ImageLoader.with(this)
                 .load(url)
-                .placeholder(R.mipmap.a)
                 .diskCache(LoadConfig.DISK_CACHE_NONE)
                 .skipMemory(true)
 //                .asBitmap(true)
-                .scaleType(ImageView.ScaleType.FIT_CENTER)
+                .scaleType(ImageView.ScaleType.CENTER_CROP)
+                .placeholder(R.mipmap.a)
+                .error(R.mipmap.ic_launcher)
 //                .round(20)
                 .fadeDuration(800)
                 .circle(true)
 //                .blur(1, 150)
-                .override(-1, -1)
+//                .override(-1, -1)
                 .listener(new LoadListener(false) {
                     @Override
                     public void onSuccess(Bitmap bitmap) {

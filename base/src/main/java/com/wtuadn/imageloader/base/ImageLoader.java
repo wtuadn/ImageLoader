@@ -50,8 +50,8 @@ public class ImageLoader {
         getLoader().clearMemoryCache();
     }
 
-    public static void trimMemory(int level) {
-        getLoader().trimMemory(level);
+    public static void onTrimMemory(int level) {
+        getLoader().onTrimMemory(level);
     }
 
     public static void onLowMemory() {

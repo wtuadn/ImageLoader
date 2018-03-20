@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.Transformation;
@@ -64,7 +65,7 @@ public class GlideLoader implements Loader {
     }
 
     @Override
-    public void trimMemory(int level) {
+    public void onTrimMemory(int level) {
         Glide.get(ImageLoader.getContext()).trimMemory(level);
     }
 
@@ -96,24 +97,14 @@ public class GlideLoader implements Loader {
             if (requestBuilder == null) requestBuilder = requestManager.load(loadConfig.uri);
             else requestBuilder = requestBuilder.load(loadConfig.uri);
         }
+        TransitionOptions transitionOptions = null;
         if (loadConfig.fadeDuration > 0) {
             DrawableCrossFadeFactory factory = new DrawableCrossFadeFactory.Builder(loadConfig.fadeDuration).setCrossFadeEnabled(true).build();
-            requestBuilder = requestBuilder.transition(isBitmap ? BitmapTransitionOptions.withCrossFade(factory)
-                    : DrawableTransitionOptions.withCrossFade(factory));
+            transitionOptions = isBitmap ? BitmapTransitionOptions.withCrossFade(factory) : DrawableTransitionOptions.withCrossFade(factory);
+            requestBuilder = requestBuilder.transition(transitionOptions);
         }
 
         RequestOptions requestOptions = RequestOptions.skipMemoryCacheOf(loadConfig.skipMemory);
-        if (loadConfig.placeholderResId != Integer.MIN_VALUE) {
-            requestOptions = requestOptions.placeholder(loadConfig.placeholderResId);
-        } else if (loadConfig.placeholderDrawable != null) {
-            requestOptions = requestOptions.placeholder(loadConfig.placeholderDrawable);
-//  todo          requestBuilder.error()
-        }
-        if (loadConfig.errorResId != Integer.MIN_VALUE) {
-            requestOptions = requestOptions.error(loadConfig.errorResId);
-        } else if (loadConfig.errorDrawable != null) {
-            requestOptions = requestOptions.error(loadConfig.errorDrawable);
-        }
         if (loadConfig.diskCache != LoadConfig.DISK_CACHE_DEFAULT) {
             switch (loadConfig.diskCache) {
                 case LoadConfig.DISK_CACHE_NONE:
@@ -157,18 +148,23 @@ public class GlideLoader implements Loader {
         if (loadConfig.isCircle) {
             TransformationWrapper wrapper = new TransformationWrapper(new CircleTransformation(loadConfig.scaleType));
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
-            requestOptions = requestOptions.placeholder(0).placeholder(null);
+            requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
             list.add(wrapper);
         } else if (loadConfig.roundCornerRadius > 0) {
             TransformationWrapper wrapper = new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadius));
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
-            requestOptions = requestOptions.placeholder(0).placeholder(null);
+            requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
             list.add(wrapper);
         } else if (loadConfig.roundCornerRadii != null && loadConfig.roundCornerRadii.length == 8) {
             TransformationWrapper wrapper = new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadii));
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
-            requestOptions = requestOptions.placeholder(0).placeholder(null);
+            requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
             list.add(wrapper);
+        } else {
+            requestOptions = requestOptions.placeholder(loadConfig.placeholderResId)
+                    .placeholder(loadConfig.placeholderDrawable)
+                    .error(loadConfig.errorResId)
+                    .error(loadConfig.errorDrawable);
         }
         if (loadConfig.transformationList != null) {
             for (int i = 0; i < loadConfig.transformationList.size(); ++i) {
@@ -238,6 +234,35 @@ public class GlideLoader implements Loader {
             }
             requestBuilder = requestBuilder.thumbnail(
                     thumbnailRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
+                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+        }
+        return requestBuilder;
+    }
+
+    @NonNull
+    private RequestBuilder errorWithTransform(@NonNull LoadConfig loadConfig, boolean isBitmap, TransitionOptions transitionOptions, RequestBuilder requestBuilder, com.bumptech.glide.load.resource.bitmap.BitmapTransformation bitmapTransformation) {
+        RequestManager requestManager = Glide.with(loadConfig.context);
+        if (loadConfig.errorResId != Integer.MIN_VALUE) {
+            RequestBuilder errorRequest;
+            if (isBitmap) {
+                errorRequest = requestManager.asBitmap().load(loadConfig.errorResId);
+            } else {
+                errorRequest = requestManager.load(loadConfig.errorResId);
+            }
+            if (transitionOptions != null) errorRequest = errorRequest.transition(transitionOptions);
+            requestBuilder = requestBuilder.error(
+                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
+                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+        } else if (loadConfig.errorDrawable != null) {
+            RequestBuilder errorRequest;
+            if (isBitmap) {
+                errorRequest = requestManager.asBitmap().load(loadConfig.errorDrawable);
+            } else {
+                errorRequest = requestManager.load(loadConfig.errorDrawable);
+            }
+            if (transitionOptions != null) errorRequest = errorRequest.transition(transitionOptions);
+            requestBuilder = requestBuilder.error(
+                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
                             .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
         }
         return requestBuilder;

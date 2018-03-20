@@ -16,7 +16,7 @@ public interface Loader {
 
     void clearMemoryCache();
 
-    void trimMemory(int level);
+    void onTrimMemory(int level);
 
     void onLowMemory();
 

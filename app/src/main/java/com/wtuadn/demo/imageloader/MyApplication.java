@@ -15,4 +15,16 @@ public class MyApplication extends Application {
         super.onCreate();
         ImageLoader.init(this, new GlideLoader());
     }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        ImageLoader.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        ImageLoader.onTrimMemory(level);
+    }
 }
