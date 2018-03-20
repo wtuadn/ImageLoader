@@ -48,8 +48,8 @@ public class LoadConfig {
     public boolean skipMemory;//跳过内存缓存,fresco无效
     public boolean asBitmap;//为true的话gif不会自动播放
     public int width, height;//期望获得的图片宽高,负值表示按原图大小加载
-    public boolean isCircle;//圆形图片，支持placeholder和error，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
-    public float roundCornerRadius;//圆角图片，支持placeholder和error，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
+    public boolean isCircle;//圆形图片，支持placeholder，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
+    public float roundCornerRadius;//圆角图片，支持placeholder，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
     public float[] roundCornerRadii;//@see #GradientDrawable.setCornerRadii()
     public float blurSampleSize;//高斯模糊时将原图缩小多少倍，可以节省内存，提高效率，不过会影响生成的图片大小，在使用CENTER_INSIDE之类的不会缩放小图的ScaleType时，请填1
     public int blurRadius;//高斯模糊采样半径

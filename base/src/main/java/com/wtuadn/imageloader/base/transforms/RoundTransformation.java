@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Build;
@@ -87,8 +85,8 @@ public class RoundTransformation extends BitmapTransformation {
             path.close();
             canvas.drawPath(path, paint);
         }
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(toTransform, matrix, paint);
+//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+//        canvas.drawBitmap(toTransform, matrix, paint);
 
         canvas.setBitmap(null);
         return result;
@@ -97,7 +95,7 @@ public class RoundTransformation extends BitmapTransformation {
     @Override
     public String getCacheKey() {
         StringBuilder builder = new StringBuilder("RoundTransformation ");
-        builder.append(ScaleUtils.getWrapedScaleType(scaleType)).append(" ");
+        builder.append(ScaleUtils.getWrappedScaleType(scaleType)).append(" ");
         builder.append(radius).append(" ");
         if (radii != null) {
             for (int i = 0; i < radii.length; ++i) {

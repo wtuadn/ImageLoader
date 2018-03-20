@@ -8,13 +8,13 @@ import android.widget.ImageView;
  * Created by wtuadn on 2018/3/19.
  */
 
-class ScaleUtils {
-    static final int MATRIX = 0;
-    static final int CENTER_CROP = 1;
-    static final int CENTER_INSIDE = 2;
-    static final int FIT_CENTER = 3;
+public class ScaleUtils {
+    public static final int MATRIX = 0;
+    public static final int CENTER_CROP = 1;
+    public static final int CENTER_INSIDE = 2;
+    public static final int FIT_CENTER = 3;
 
-    static int getWrapedScaleType(ImageView.ScaleType scaleType) {
+    public static int getWrappedScaleType(ImageView.ScaleType scaleType) {
         switch (scaleType) {
             case CENTER_CROP:
                 return CENTER_CROP;
@@ -29,15 +29,15 @@ class ScaleUtils {
         return MATRIX;
     }
 
-    static float getValue(Matrix matrix, int index) {
+    public static float getValue(Matrix matrix, int index) {
         float[] values = new float[9];
         matrix.getValues(values);
         return values[index];
     }
 
     @NonNull
-    static int[] getResultWH(ImageView.ScaleType scaleType, int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
-        switch (getWrapedScaleType(scaleType)) {
+    public static int[] getResultWH(ImageView.ScaleType scaleType, int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
+        switch (getWrappedScaleType(scaleType)) {
             case CENTER_CROP:
                 return new int[]{outWidth, outHeight};
             case CENTER_INSIDE:
@@ -54,8 +54,8 @@ class ScaleUtils {
     }
 
     @NonNull
-    static Matrix getMatrix(ImageView.ScaleType scaleType, int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
-        switch (getWrapedScaleType(scaleType)) {
+    public static Matrix getMatrix(ImageView.ScaleType scaleType, int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
+        switch (getWrappedScaleType(scaleType)) {
             case CENTER_CROP:
                 return getCenterCropMatrix(bitmapWidth, bitmapHeight, outWidth, outHeight);
             case CENTER_INSIDE:
@@ -91,7 +91,7 @@ class ScaleUtils {
         Matrix m = new Matrix();
         if (bitmapWidth > outWidth || bitmapHeight > outHeight) {
             float maxScale = Math.max(((float) bitmapWidth / outWidth), ((float) bitmapHeight / outHeight));
-            m.setScale(maxScale, maxScale);
+            m.setScale(1 / maxScale, 1 / maxScale);
         }
         return m;
     }

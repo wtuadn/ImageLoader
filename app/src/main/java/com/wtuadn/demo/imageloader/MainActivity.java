@@ -17,7 +17,7 @@ import com.wtuadn.imageloader.base.LoadConfig;
 import com.wtuadn.imageloader.base.LoadListener;
 
 public class MainActivity extends Activity {
-    //    private String url = "http://4k.znds.com/20140314/4kznds3.jpg";
+//            private String url = "http://4k.znds.com/20140314/4kznds3.jpg";
     private String url = "http://img.soogif.com/8Xu7aeBRwgq4Cokz6cai6bdTjLSAGc3A.gif_s400x0";
     private ViewGroup container;
 
@@ -31,14 +31,16 @@ public class MainActivity extends Activity {
 
         ImageLoader.with(this)
                 .load(url)
-                .load(R.mipmap.ic_launcher)
-                .diskCache(LoadConfig.DISK_CACHE_SOURCE)
+                .placeholder(R.mipmap.a)
+                .diskCache(LoadConfig.DISK_CACHE_NONE)
                 .skipMemory(true)
-                .scaleType(ImageView.ScaleType.CENTER_CROP)
-                .round(new float[]{100, 50, 50, 100, 200, 100, 100, 50})
-//                .circle(true)
+//                .asBitmap(true)
+                .scaleType(ImageView.ScaleType.FIT_CENTER)
+//                .round(20)
+                .fadeDuration(800)
+                .circle(true)
 //                .blur(1, 150)
-//                .override(-1, -1)
+                .override(-1, -1)
                 .listener(new LoadListener(false) {
                     @Override
                     public void onSuccess(Bitmap bitmap) {
@@ -50,7 +52,19 @@ public class MainActivity extends Activity {
                     }
                 })
                 .into(img1);
-
+//        img1.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//        Glide.with(this)
+//                .asBitmap()
+//                .load(url)
+//                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)
+//                        .skipMemoryCache(true).placeholder(R.mipmap.a)
+////                        .override(Target.SIZE_ORIGINAL)
+//                        .transform(new RoundedCorners(20))
+//                        .downsample(DownsampleStrategy.FIT_CENTER)
+////                        .centerInside()
+//                )
+////                .transition(BitmapTransitionOptions.withCrossFade(new DrawableCrossFadeFactory.Builder(800).setCrossFadeEnabled(true).build()))
+//                .into(img1);
     }
 
     void test1(Bitmap bitmap) {

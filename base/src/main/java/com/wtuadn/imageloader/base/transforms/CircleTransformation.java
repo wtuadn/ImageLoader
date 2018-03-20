@@ -58,6 +58,6 @@ public class CircleTransformation extends BitmapTransformation {
 
     @Override
     public String getCacheKey() {
-        return "CircleTransformation " + ScaleUtils.getWrapedScaleType(scaleType);
+        return "CircleTransformation " + ScaleUtils.getWrappedScaleType(scaleType);
     }
 }
