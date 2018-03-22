@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -28,15 +31,15 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation 'com.github.wtuadn.ImageLoader:base:v1.0.0'
-    implementation 'com.github.wtuadn.ImageLoader:glideloader:v1.0.0'
-    implementation 'com.github.wtuadn.ImageLoader:frescoloader:v1.0.0'
+    implementation 'com.github.wtuadn.ImageLoader:base:v1.0.1'
+    implementation 'com.github.wtuadn.ImageLoader:glideloader:v1.0.1'
+    implementation 'com.github.wtuadn.ImageLoader:frescoloader:v1.0.1'
 
-    // For animated GIF support
-    implementation 'com.facebook.fresco:animated-gif:1.8.1'
-    // For WebP support, including animated WebP
-    implementation 'com.facebook.fresco:animated-webp:1.8.1'
-    implementation 'com.facebook.fresco:webpsupport:1.8.1'
+//    // For animated GIF support
+//    implementation 'com.facebook.fresco:animated-gif:1.8.1'
+//    // For WebP support, including animated WebP
+//    implementation 'com.facebook.fresco:animated-webp:1.8.1'
+//    implementation 'com.facebook.fresco:webpsupport:1.8.1'
 
     implementation "com.android.support:recyclerview-v7:$supportLibExt"
     implementation 'com.github.wtuadn:yrecyclerview:v1.0.4'
