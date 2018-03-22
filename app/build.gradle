@@ -22,11 +22,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation project(':base')
-    implementation project(':glideloader')
-    implementation project(':frescoloader')
+//    implementation project(':glideloader')
+//    implementation project(':frescoloader')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation 'com.github.wtuadn.ImageLoader:base:v1.0.0'
+    implementation 'com.github.wtuadn.ImageLoader:glideloader:v1.0.0'
+    implementation 'com.github.wtuadn.ImageLoader:frescoloader:v1.0.0'
 
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:1.8.1'
