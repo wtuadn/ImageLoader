@@ -13,18 +13,20 @@ public class ScaleUtils {
     public static final int CENTER_CROP = 1;
     public static final int CENTER_INSIDE = 2;
     public static final int FIT_CENTER = 3;
+    public static final int FIT_XY = 4;
 
     public static int getWrappedScaleType(ImageView.ScaleType scaleType) {
         switch (scaleType) {
             case CENTER_CROP:
                 return CENTER_CROP;
             case CENTER_INSIDE:
-            case FIT_XY:
                 return CENTER_INSIDE;
             case FIT_CENTER:
             case FIT_START:
             case FIT_END:
                 return FIT_CENTER;
+            case FIT_XY:
+                return FIT_XY;
         }
         return MATRIX;
     }
@@ -39,6 +41,7 @@ public class ScaleUtils {
     public static int[] getResultWH(ImageView.ScaleType scaleType, int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
         switch (getWrappedScaleType(scaleType)) {
             case CENTER_CROP:
+            case FIT_XY:
                 return new int[]{outWidth, outHeight};
             case CENTER_INSIDE:
                 if (bitmapWidth > outWidth || bitmapHeight > outHeight) {
@@ -62,6 +65,8 @@ public class ScaleUtils {
                 return getCenterInsideMatrix(bitmapWidth, bitmapHeight, outWidth, outHeight);
             case FIT_CENTER:
                 return getFitCenterMatrix(bitmapWidth, bitmapHeight, outWidth, outHeight);
+            case FIT_XY:
+                return getFitXYMatrix(bitmapWidth, bitmapHeight, outWidth, outHeight);
         }
         return new Matrix();
     }
@@ -100,6 +105,12 @@ public class ScaleUtils {
         Matrix m = new Matrix();
         float maxScale = Math.max(((float) bitmapWidth / outWidth), ((float) bitmapHeight / outHeight));
         m.setScale(1 / maxScale, 1 / maxScale);
+        return m;
+    }
+
+    private static Matrix getFitXYMatrix(int bitmapWidth, int bitmapHeight, int outWidth, int outHeight) {
+        Matrix m = new Matrix();
+        m.setScale((float) outWidth / bitmapWidth, (float) outHeight / bitmapHeight);
         return m;
     }
 }

@@ -27,4 +27,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    // For animated GIF support
+    implementation 'com.facebook.fresco:animated-gif:1.8.1'
+    // For WebP support, including animated WebP
+    implementation 'com.facebook.fresco:animated-webp:1.8.1'
+    implementation 'com.facebook.fresco:webpsupport:1.8.1'
 }

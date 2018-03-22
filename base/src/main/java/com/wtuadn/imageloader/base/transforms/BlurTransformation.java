@@ -23,6 +23,7 @@ public class BlurTransformation extends BitmapTransformation {
 
     @Override
     public Bitmap transform(Bitmap toTransform, int outWidth, int outHeight) {
+        if (blurSampleSize <= 1 && blurRadius <= 0) return toTransform;
         int width = toTransform.getWidth();
         int height = toTransform.getHeight();
         int scaledWidth = (int) (width / blurSampleSize);
@@ -39,18 +40,20 @@ public class BlurTransformation extends BitmapTransformation {
         Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
         canvas.drawBitmap(toTransform, 0, 0, paint);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                try {
-                    result = RSBlur.blur(ImageLoader.getContext(), result, blurRadius);
-                } catch (RSRuntimeException e) {
+        if (blurRadius > 0) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && blurRadius <= 25) {
+                    try {
+                        result = RSBlur.blur(ImageLoader.getContext(), result, blurRadius);
+                    } catch (RSRuntimeException e) {
+                        result = FastBlur.blur(result, blurRadius, true);
+                    }
+                } else {
                     result = FastBlur.blur(result, blurRadius, true);
                 }
-            } else {
-                result = FastBlur.blur(result, blurRadius, true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         canvas.setBitmap(null);
         return result;

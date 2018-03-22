@@ -12,7 +12,6 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -36,6 +35,7 @@ import com.wtuadn.imageloader.base.transforms.ScaleUtils;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -127,39 +127,39 @@ public class GlideLoader implements Loader {
             requestOptions = requestOptions.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
         }
 
-        if (loadConfig.scaleType != null && loadConfig.targetView != null) {
-            loadConfig.targetView.setScaleType(loadConfig.scaleType);
+        if (loadConfig.scaleType != null) {
+            if (loadConfig.targetView != null) loadConfig.targetView.setScaleType(loadConfig.scaleType);
             switch (ScaleUtils.getWrappedScaleType(loadConfig.scaleType)) {
-                case ScaleUtils.CENTER_CROP:
-                    requestOptions = requestOptions.downsample(DownsampleStrategy.CENTER_OUTSIDE);
-                case ScaleUtils.CENTER_INSIDE:
-                    requestOptions = requestOptions.downsample(DownsampleStrategy.CENTER_INSIDE);
                 case ScaleUtils.FIT_CENTER:
                     requestOptions = requestOptions.downsample(DownsampleStrategy.FIT_CENTER);
-                case ScaleUtils.MATRIX:
-                    requestOptions = requestOptions.downsample(DownsampleStrategy.NONE);
+                    break;
+                default:
+                    requestOptions = requestOptions.downsample(DownsampleStrategy.CENTER_OUTSIDE);
             }
         }
 
-        List<Transformation> list = new ArrayList<>(3);
+        List<BitmapTransformation> list = new ArrayList<>(2);
         if (loadConfig.blurRadius > 0) {
-            list.add(new TransformationWrapper(new BlurTransformation(loadConfig.blurSampleSize, loadConfig.blurRadius)));
+            list.add(new BlurTransformation(loadConfig.blurSampleSize, loadConfig.blurRadius));
         }
         if (loadConfig.isCircle) {
-            TransformationWrapper wrapper = new TransformationWrapper(new CircleTransformation(loadConfig.scaleType));
+            CircleTransformation transformation = new CircleTransformation(loadConfig.scaleType);
+            TransformationWrapper wrapper = new TransformationWrapper(transformation);
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
             requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
-            list.add(wrapper);
+            list.add(transformation);
         } else if (loadConfig.roundCornerRadius > 0) {
-            TransformationWrapper wrapper = new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadius));
+            RoundTransformation transformation = new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadius);
+            TransformationWrapper wrapper = new TransformationWrapper(transformation);
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
             requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
-            list.add(wrapper);
+            list.add(transformation);
         } else if (loadConfig.roundCornerRadii != null && loadConfig.roundCornerRadii.length == 8) {
-            TransformationWrapper wrapper = new TransformationWrapper(new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadii));
+            RoundTransformation transformation = new RoundTransformation(loadConfig.scaleType, loadConfig.roundCornerRadii);
+            TransformationWrapper wrapper = new TransformationWrapper(transformation);
             requestBuilder = placeholderWithTransform(loadConfig, isBitmap, requestBuilder, wrapper);
             requestBuilder = errorWithTransform(loadConfig, isBitmap, transitionOptions, requestBuilder, wrapper);
-            list.add(wrapper);
+            list.add(transformation);
         } else {
             requestOptions = requestOptions.placeholder(loadConfig.placeholderResId)
                     .placeholder(loadConfig.placeholderDrawable)
@@ -167,11 +167,9 @@ public class GlideLoader implements Loader {
                     .error(loadConfig.errorDrawable);
         }
         if (loadConfig.transformationList != null) {
-            for (int i = 0; i < loadConfig.transformationList.size(); ++i) {
-                list.add(new TransformationWrapper(loadConfig.transformationList.get(i)));
-            }
+            list.addAll(loadConfig.transformationList);
         }
-        if (list.size() > 0) requestOptions = requestOptions.transforms(list.toArray(new Transformation[list.size()]));
+        if (list.size() > 0) requestOptions = requestOptions.transform(new MultiTransformation(list));
         if (loadConfig.format != null) {
             if (loadConfig.format == Bitmap.Config.RGB_565) {
                 requestOptions = requestOptions.format(DecodeFormat.PREFER_RGB_565);
@@ -191,9 +189,9 @@ public class GlideLoader implements Loader {
 
                 @Override
                 public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
-                    if (loadConfig.loadListener.returnBitmap && resource instanceof Bitmap)
+                    if (loadConfig.loadListener.returnBitmap && resource instanceof Bitmap) {
                         loadConfig.loadListener.onSuccess((Bitmap) resource);
-                    else {
+                    } else {
                         loadConfig.loadListener.onSuccess(null);
                     }
                     return false;
@@ -223,8 +221,7 @@ public class GlideLoader implements Loader {
                 thumbnailRequest = requestManager.load(loadConfig.placeholderResId);
             }
             requestBuilder = requestBuilder.thumbnail(
-                    thumbnailRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+                    thumbnailRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)));
         } else if (loadConfig.placeholderDrawable != null) {
             RequestBuilder thumbnailRequest;
             if (isBitmap) {
@@ -233,8 +230,7 @@ public class GlideLoader implements Loader {
                 thumbnailRequest = requestManager.load(loadConfig.placeholderDrawable);
             }
             requestBuilder = requestBuilder.thumbnail(
-                    thumbnailRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+                    thumbnailRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)));
         }
         return requestBuilder;
     }
@@ -251,8 +247,7 @@ public class GlideLoader implements Loader {
             }
             if (transitionOptions != null) errorRequest = errorRequest.transition(transitionOptions);
             requestBuilder = requestBuilder.error(
-                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)));
         } else if (loadConfig.errorDrawable != null) {
             RequestBuilder errorRequest;
             if (isBitmap) {
@@ -262,17 +257,65 @@ public class GlideLoader implements Loader {
             }
             if (transitionOptions != null) errorRequest = errorRequest.transition(transitionOptions);
             requestBuilder = requestBuilder.error(
-                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)));
+                    errorRequest.apply(RequestOptions.bitmapTransform(bitmapTransformation)));
         }
         return requestBuilder;
     }
 
-    static class TransformationWrapper extends com.bumptech.glide.load.resource.bitmap.BitmapTransformation implements BitmapTransformation.ReuseBitmapListener {
+    private static class MultiTransformation extends com.bumptech.glide.load.resource.bitmap.BitmapTransformation implements BitmapTransformation.ReuseBitmapListener {
+        private final Collection<BitmapTransformation> transformations;
+        private BitmapPool bitmapPool;
+
+        private MultiTransformation(Collection<BitmapTransformation> transformations) {
+            this.transformations = transformations;
+        }
+
+        @Override
+        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+            this.bitmapPool = pool;
+            for (BitmapTransformation t : transformations) {
+                if (t.getReuseBitmapListener() == null) {
+                    t.setReuseBitmapListener(this);
+                }
+                toTransform = t.transform(toTransform, outWidth, outHeight);
+            }
+            return toTransform;
+        }
+
+        @Override
+        public Bitmap getReuseableBitmap(int width, int height, Bitmap.Config config) {
+            if (bitmapPool == null) return null;
+            return bitmapPool.get(width, height, config);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof MultiTransformation) {
+                return transformations.equals(((MultiTransformation) obj).transformations);
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return transformations.hashCode();
+        }
+
+        @Override
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+            for (BitmapTransformation t : transformations) {
+                if (t.getCacheKey() != null) {
+                    messageDigest.update(t.getCacheKey().getBytes());
+                }
+            }
+        }
+    }
+
+    private static class TransformationWrapper extends com.bumptech.glide.load.resource.bitmap.BitmapTransformation implements BitmapTransformation.ReuseBitmapListener {
         private BitmapTransformation transformation;
         private BitmapPool bitmapPool;
 
-        TransformationWrapper(@NonNull BitmapTransformation transformation) {
+        private TransformationWrapper(@NonNull BitmapTransformation transformation) {
             this.transformation = transformation;
         }
 

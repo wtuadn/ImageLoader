@@ -85,8 +85,6 @@ public class RoundTransformation extends BitmapTransformation {
             path.close();
             canvas.drawPath(path, paint);
         }
-//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-//        canvas.drawBitmap(toTransform, matrix, paint);
 
         canvas.setBitmap(null);
         return result;

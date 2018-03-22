@@ -33,9 +33,9 @@ public class CircleTransformation extends BitmapTransformation {
         int resultWidth = resultWH[0];
         int resultHeight = resultWH[1];
 
-        Matrix matrix = ScaleUtils.getMatrix(scaleType, minEdge, minEdge, outWidth, outHeight);
-        float scale = ScaleUtils.getValue(matrix, Matrix.MSCALE_X);
-        float radius = minEdge / 2f * scale;
+
+        Matrix matrix = ScaleUtils.getMatrix(ImageView.ScaleType.CENTER_CROP, width, height, resultWidth, resultHeight);
+        float radius = Math.min(resultWidth, resultHeight) / 2f;
         float cx = resultWidth / 2f;
         float cy = resultHeight / 2f;
 

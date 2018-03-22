@@ -2,12 +2,6 @@ package com.wtuadn.demo.imageloader;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Shader;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,10 +9,14 @@ import android.widget.ImageView;
 import com.wtuadn.imageloader.base.ImageLoader;
 import com.wtuadn.imageloader.base.LoadConfig;
 import com.wtuadn.imageloader.base.LoadListener;
+import com.wtuadn.imageloader.base.transforms.CircleTransformation;
+import com.wtuadn.imageloader.frescoloader.FrescoLoader;
+import com.wtuadn.imageloader.glideloader.GlideLoader;
 
 public class MainActivity extends Activity {
-//            private String url = "http://4k.znds.com/20140314/4kznds3.jpg";
-    private String url = "http://img.soogif.com/8Xu7aeBRwgq4Cokz6cai6bdTjLSAGc3A.gif_s400x0";
+            private String url = "http://4k.znds.com/20140314/4kznds3.jpg";
+//    private String url = "http://img.soogif.com/8Xu7aeBRwgq4Cokz6cai6bdTjLSAGc3A.gif_s400x0";
+//    private String url = "http://storage.slide.news.sina.com.cn/slidenews/77_ori/2018_10/74766_815135_885755.gif";
     private ViewGroup container;
 
     @Override
@@ -27,20 +25,43 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         container = findViewById(R.id.container);
 
-        final ImageView img1 = container.findViewById(R.id.img1);
+        ImageLoader.init(this, new GlideLoader());
+        test((ImageView) container.findViewById(R.id.img1));
+        ImageLoader.init(this, new FrescoLoader());
+        test((ImageView) container.findViewById(R.id.img2));
+//        container.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                final ImageView img1 = container.findViewById(R.id.img1);
+//                container.removeView(img1);
+//                container.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        container.addView(img1, 0);
+//                        ImageLoader.with(getApplicationContext())
+//                                .load("http://img.soogif.com/8Xu7aeBRwgq4Cokz6cai6bdTjLSAGc3A.gif_s400x0")
+//                                .into(img1);
+//                    }
+//                }, 2000);
+//            }
+//        }, 2000);
+    }
 
+    void test(ImageView img1){
         ImageLoader.with(this)
                 .load(url)
+//                .load(R.mipmap.a)
                 .diskCache(LoadConfig.DISK_CACHE_NONE)
                 .skipMemory(true)
-//                .asBitmap(true)
+                .asBitmap(true)
                 .scaleType(ImageView.ScaleType.CENTER_CROP)
                 .placeholder(R.mipmap.a)
                 .error(R.mipmap.ic_launcher)
 //                .round(20)
-                .fadeDuration(800)
-                .circle(true)
-//                .blur(1, 150)
+                .fadeDuration(500)
+//                .circle(true)
+                .blur(2, 15)
+                .addTransform(new CircleTransformation(ImageView.ScaleType.CENTER_CROP))
 //                .override(-1, -1)
                 .listener(new LoadListener(false) {
                     @Override
@@ -53,52 +74,33 @@ public class MainActivity extends Activity {
                     }
                 })
                 .into(img1);
-//        img1.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//        img1.setScaleType(ImageView.ScaleType.FIT_CENTER);
 //        Glide.with(this)
-//                .asBitmap()
+////                .asBitmap()
 //                .load(url)
 //                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)
 //                        .skipMemoryCache(true).placeholder(R.mipmap.a)
 ////                        .override(Target.SIZE_ORIGINAL)
 //                        .transform(new RoundedCorners(20))
-//                        .downsample(DownsampleStrategy.FIT_CENTER)
+//                        .downsample(DownsampleStrategy.CENTER_OUTSIDE)
 ////                        .centerInside()
 //                )
-////                .transition(BitmapTransitionOptions.withCrossFade(new DrawableCrossFadeFactory.Builder(800).setCrossFadeEnabled(true).build()))
+//                .transition(DrawableTransitionOptions.withCrossFade(new DrawableCrossFadeFactory.Builder(800).setCrossFadeEnabled(true).build()))
 //                .into(img1);
     }
 
-    void test1(Bitmap bitmap) {
-        int minEdge = Math.min(bitmap.getWidth(), bitmap.getHeight());
-        Bitmap result = Bitmap.createBitmap(minEdge, minEdge, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-
-        float radius = minEdge / 2f;
-        float cx = minEdge / 2f;
-        float cy = minEdge / 2f;
-
-        canvas.drawCircle(cx, cy, radius, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        canvas.setBitmap(null);
-//        ((ImageView) findViewById(R.id.img2)).setImageBitmap(result);
-    }
-
-    void test2(Bitmap bitmap) {
-        int minEdge = Math.min(bitmap.getWidth(), bitmap.getHeight());
-        Bitmap result = Bitmap.createBitmap(minEdge, minEdge, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-
-        float radius = minEdge / 2f;
-        float cx = minEdge / 2f;
-        float cy = minEdge / 2f;
-
-        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        paint.setShader(shader);
-        canvas.drawCircle(cx, cy, radius, paint);
-        canvas.setBitmap(null);
-//        ((ImageView) findViewById(R.id.img3)).setImageBitmap(result);
+    void bb() {
+//        try{
+//            final Class<?> activityThreadClass =
+//                    Class.forName("android.app.ActivityThread");
+//            final Method method = activityThreadClass.getMethod("currentApplication");
+//            Context context = (Context) method.invoke(null, (Object[]) null);
+//            FileOutputStream stream = new FileOutputStream(new File(context.getExternalCacheDir()+"/1.jpg"));
+//            result.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+//            stream.flush();
+//            stream.close();
+//        }catch (Exception e){
+//
+//        }
     }
 }
