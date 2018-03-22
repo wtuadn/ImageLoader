@@ -16,7 +16,8 @@ public class MyApplication extends Application {
 
 //        ImageLoader.init(this, new GlideLoader());
 //        ImageLoader.init(this, new FrescoLoader());
-        Fresco.initialize(this);
+
+        Fresco.initialize(this);//本库只处理图片加载，初始化、配置缓存等请另外配置
     }
 
     @Override

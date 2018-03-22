@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/container"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/btn_glide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onClick"
+        android:clickable="true"
+        android:text="use glide"/>
 
-        <ImageView
-            android:id="@+id/img1"
-            android:layout_width="300dp"
-            android:layout_height="200dp"/>
-
-        <ImageView
-            android:id="@+id/img2"
-            android:layout_width="300dp"
-            android:layout_height="200dp"/>
-
-        <ImageView
-            android:id="@+id/img3"
-            android:layout_width="300dp"
-            android:layout_height="200dp"/>
-    </LinearLayout>
-
-</ScrollView>
+    <Button
+        android:id="@+id/btn_fresco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:onClick="onClick"
+        android:clickable="true"
+        android:text="use fresco"/>
+</LinearLayout>

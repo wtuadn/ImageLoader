@@ -27,10 +27,10 @@ import com.facebook.drawee.view.DraweeHolder;
 import com.facebook.imagepipeline.common.ImageDecodeOptions;
 import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
 import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.image.CloseableStaticBitmap;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.wtuadn.imageloader.R;
 import com.wtuadn.imageloader.base.LoadConfig;
 import com.wtuadn.imageloader.base.Loader;
 import com.wtuadn.imageloader.base.transforms.BitmapTransformation;
@@ -160,10 +160,12 @@ public class FrescoLoader implements Loader {
                 requestBuilder.setResizeOptions(ResizeOptions.forDimensions(lp.width, lp.height));
             }
         }
-        if (loadConfig.format != null || loadConfig.asBitmap) {
-            ImageDecodeOptionsBuilder decodeOptionsBuilder = ImageDecodeOptions.newBuilder().setForceStaticImage(loadConfig.asBitmap);
+        if (loadConfig.format != null || loadConfig.asBitmap || (loadConfig.loadListener != null && loadConfig.loadListener.returnBitmap)) {
+            ImageDecodeOptionsBuilder decodeOptionsBuilder = ImageDecodeOptions.newBuilder().setForceStaticImage(
+                    loadConfig.asBitmap || (loadConfig.loadListener != null && loadConfig.loadListener.returnBitmap));
             if (loadConfig.format != null) decodeOptionsBuilder.setBitmapConfig(loadConfig.format);
             requestBuilder.setImageDecodeOptions(decodeOptionsBuilder.build());
+            if (loadConfig.loadListener != null && loadConfig.loadListener.returnBitmap) hierarchy.setFadeDuration(0);
         }
         if (loadConfig.transformationList != null || loadConfig.blurRadius > 0) {
             List<BitmapTransformation> list = new ArrayList<>(1);
@@ -223,6 +225,15 @@ public class FrescoLoader implements Loader {
         @Override
         public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
             if (loadConfig.loadListener.returnBitmap) {
+                if (imageInfo instanceof CloseableStaticBitmap
+                        && !loadConfig.isCircle && loadConfig.roundCornerRadius <= 0
+                        && (loadConfig.roundCornerRadii == null || loadConfig.roundCornerRadii.length != 8)) {
+                    Bitmap bitmap = ((CloseableStaticBitmap) imageInfo).getUnderlyingBitmap();
+                    if (bitmap != null) {
+                        loadConfig.loadListener.onSuccess(Bitmap.createBitmap(bitmap));
+                        return;
+                    }
+                }
                 int width = 0, height = 0;
                 if (imageInfo != null) {
                     width = imageInfo.getWidth();
@@ -239,8 +250,13 @@ public class FrescoLoader implements Loader {
                     }
                 }
                 if (width <= 0 || height <= 0) {
-                    width = 200;
-                    height = 200;
+                    if (loadConfig.width > 0 && loadConfig.height > 0) {
+                        width = loadConfig.width;
+                        height = loadConfig.height;
+                    } else {
+                        width = 200;
+                        height = 200;
+                    }
                 }
                 Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);

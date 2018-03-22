@@ -33,4 +33,7 @@ dependencies {
     // For WebP support, including animated WebP
     implementation 'com.facebook.fresco:animated-webp:1.8.1'
     implementation 'com.facebook.fresco:webpsupport:1.8.1'
+
+    implementation "com.android.support:recyclerview-v7:$supportLibExt"
+    implementation 'com.github.wtuadn:yrecyclerview:v1.0.4'
 }

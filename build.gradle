@@ -1,10 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.compileSdkExt = 26
+    ext.compileSdkExt = 27
     ext.minSdkExt = 14
-    ext.targetSdkExt = 26
-    ext.supportLibExt = '26.1.0'
+    ext.targetSdkExt = 27
+    ext.supportLibExt = '27.0.2'
 
     repositories {
         google()
@@ -23,6 +23,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
