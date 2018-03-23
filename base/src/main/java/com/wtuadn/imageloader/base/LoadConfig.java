@@ -42,19 +42,60 @@ public class LoadConfig {
     public Drawable placeholderDrawable;
     public int errorResId = Integer.MIN_VALUE;
     public Drawable errorDrawable;
-    public int diskCache = DISK_CACHE_DEFAULT;//磁盘缓存策略，glide支持所有，fresco只支持有和没有两种
-    public Bitmap.Config format;//针对该次请求使用config，只支持RGB_565、ARGB_8888
-    public ImageView.ScaleType scaleType;//除了对图片做变换，同时也会修改ImageView的ScaleType
-    public boolean skipMemory;//跳过内存缓存,fresco无效
-    public boolean asBitmap;//为true的话gif不会自动播放
-    public int width, height;//期望获得的图片宽高,负值表示按原图大小加载
-    public boolean isCircle;//圆形图片，支持placeholder，最好搭配fitCenter使用，否则fresco会用镜像显示小图片
-    public float roundCornerRadius;//圆角图片，支持placeholder，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
-    public float[] roundCornerRadii;//float array of 8 radii in pixels. Each corner receives two radius values [X, Y]. The corners are ordered top-left, top-right, bottom-right, bottom-left.
-    public float blurSampleSize;//高斯模糊时将原图缩小多少倍，可以节省内存，提高效率，不过会影响生成的图片大小，在使用CENTER_INSIDE之类的不会缩放小图的ScaleType时，请填1
-    public int blurRadius;//高斯模糊采样半径
-    public int fadeDuration = 300;//透明渐变动画时长，0为关闭动画
-    public List<BitmapTransformation> transformationList;//fresco动图不支持变换
+    /**
+     * 磁盘缓存策略，glide支持所有，fresco只支持有和没有两种
+     */
+    public int diskCache = DISK_CACHE_DEFAULT;
+    /**
+     * 针对该次请求使用的config，只支持RGB_565、ARGB_8888
+     */
+    public Bitmap.Config format;
+    /**
+     * 除了对图片做变换，同时也会修改ImageView的ScaleType
+     */
+    public ImageView.ScaleType scaleType;
+    /**
+     * 跳过内存缓存
+     */
+    public boolean skipMemory;
+    /**
+     * 为true的话gif不会自动播放
+     */
+    public boolean asBitmap;
+    /**
+     * 期望获得的图片宽高,负值表示按原图大小加载
+     */
+    public int width, height;
+    /**
+     * 圆形图片，支持placeholder，最好搭配fitCenter使用，否则fresco会用镜像显示小图片
+     */
+    public boolean isCircle;
+    /**
+     * 圆角图片，支持placeholder，最好搭配centerCrop使用，否则fresco会用镜像显示小图片
+     */
+    public float roundCornerRadius;
+    /**
+     * float array of 8 radii in pixels. Each corner receives two radius values [X, Y].
+     * The corners are ordered top-left, top-right, bottom-right, bottom-left.
+     */
+    public float[] roundCornerRadii;
+    /**
+     * 高斯模糊时将原图缩小多少倍，可以节省内存，提高效率，不过会影响生成的图片大小，
+     * 在使用CENTER_INSIDE之类的不会缩放小图的ScaleType时，请填1
+     */
+    public float blurSampleSize;
+    /**
+     * 高斯模糊采样半径
+     */
+    public int blurRadius;
+    /**
+     * 透明渐变动画时长，0为关闭动画
+     */
+    public int fadeDuration;
+    /**
+     * 统一的图形变换接口，fresco动图不支持
+     */
+    public List<BitmapTransformation> transformationList;
     public LoadListener loadListener;
     public ImageView targetView;
 

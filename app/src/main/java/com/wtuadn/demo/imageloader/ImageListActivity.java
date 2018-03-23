@@ -2,7 +2,6 @@ package com.wtuadn.demo.imageloader;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 
 import com.wtuadn.imageloader.base.ImageLoader;
 import com.wtuadn.imageloader.base.LoadConfig;
-import com.wtuadn.imageloader.base.LoadListener;
 import com.wtuadn.yrecyclerview.RecyclerListAdapter;
 import com.wtuadn.yrecyclerview.YRecyclerView;
 
@@ -76,23 +74,34 @@ public class ImageListActivity extends Activity {
                         .scaleType(ImageView.ScaleType.CENTER_CROP)
                         .placeholder(R.mipmap.a)
                         .error(R.mipmap.ic_launcher)
-//                        .round(30)
+                        .round(30)
                         .fadeDuration(300)
-                        .circle(true)
-                        .blur(16, 2)
+//                        .circle(true)
+                        .blur(8, 5)
 //                        .addTransform(new CircleTransformation(ImageView.ScaleType.CENTER_CROP))
 //                        .override(500, 500)
-                        .listener(new LoadListener(true) {
-                            @Override
-                            public void onSuccess(Bitmap bitmap) {
-                                holder.imageView.setImageBitmap(bitmap);
-                            }
+//                        .listener(new LoadListener(true) {
+//                            @Override
+//                            public void onSuccess(Bitmap bitmap) {
+//                                holder.imageView.setImageBitmap(bitmap);
+//                            }
+//
+//                            @Override
+//                            public void onFail() {
+//                            }
+//                        })
+                        .into(holder.imageView);
 
-                            @Override
-                            public void onFail() {
-                            }
-                        })
-                        .into(null);
+//                ImageLoader.with(context)
+//                        .load(url)
+//                        .diskCache(LoadConfig.DISK_CACHE_ALL)
+//                        .scaleType(ImageView.ScaleType.CENTER_CROP)
+//                        .placeholder(R.mipmap.a)
+//                        .error(R.mipmap.ic_launcher)
+//                        .round(30)
+//                        .fadeDuration(300)
+//                        .blur(8, 5)
+//                        .into(imageView);
             }
         }
 

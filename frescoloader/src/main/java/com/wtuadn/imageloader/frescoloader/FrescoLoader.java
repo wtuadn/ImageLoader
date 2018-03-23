@@ -149,6 +149,7 @@ public class FrescoLoader implements Loader {
             else if (loadConfig.file != null) uri = Uri.fromFile(loadConfig.file);
             else uri = UriUtil.getUriForResourceId(loadConfig.resId);
         }
+        if (loadConfig.skipMemory) Fresco.getImagePipeline().evictFromMemoryCache(uri);
         ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(uri);
         if (loadConfig.width > 0 && loadConfig.height > 0) {
             requestBuilder.setResizeOptions(ResizeOptions.forDimensions(loadConfig.width, loadConfig.height));

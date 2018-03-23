@@ -29,9 +29,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-//    api('com.github.wtuadn.ImageLoader:base:v1.0.4'){
-//        transitive = true
-//    }
     api('com.facebook.fresco:fresco:1.8.1') {
         transitive = true
     }
