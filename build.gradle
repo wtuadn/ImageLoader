@@ -2,6 +2,7 @@
 
 buildscript {
     ext.compileSdkExt = 27
+    ext.buildToolsExt = '27.0.2'
     ext.minSdkExt = 14
     ext.targetSdkExt = 27
     ext.supportLibExt = '27.1.0'

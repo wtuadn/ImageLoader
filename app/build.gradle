@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion compileSdkExt
+    buildToolsVersion buildToolsExt
 
     defaultConfig {
         applicationId "com.wtuadn.demo.imageloader"
@@ -31,9 +32,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation 'com.github.wtuadn.ImageLoader:base:v1.0.0'//必选
-    implementation 'com.github.wtuadn.ImageLoader:glideloader:v1.0.0'//二选一
-    implementation 'com.github.wtuadn.ImageLoader:frescoloader:v1.0.0'//二选一
+    implementation 'com.github.wtuadn.ImageLoader:base:1.0.0'//必选
+    implementation 'com.github.wtuadn.ImageLoader:glideloader:1.0.0'//二选一
+    implementation 'com.github.wtuadn.ImageLoader:frescoloader:1.0.0'//二选一
 
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:1.8.1'
