@@ -1,1 +1,1 @@
-include ':app'//, ':base', ':glideloader', ':frescoloader'
+include ':app', ':base', ':glideloader', ':frescoloader'
