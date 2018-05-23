@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.compileSdkExt = 27
+    ext.compileSdkExt = 26
     ext.minSdkExt = 14
     ext.targetSdkExt = 26
     ext.supportLibExt = '27.1.1'
