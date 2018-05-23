@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion compileSdkExt
-    buildToolsVersion buildToolsExt
 
     defaultConfig {
         applicationId "com.wtuadn.demo.imageloader"
