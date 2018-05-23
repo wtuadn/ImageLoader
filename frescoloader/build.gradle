@@ -4,11 +4,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.wtuadn'
 
 android {
-    compileSdkVersion compileSdkExt
+    compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion minSdkExt
-        targetSdkVersion targetSdkExt
+        minSdkVersion 14
+        targetSdkVersion 27
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'proguard-rules.pro'
