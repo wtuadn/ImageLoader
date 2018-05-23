@@ -112,9 +112,9 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency:
 ```gradle
     dependencies {
-        complie 'com.github.wtuadn.ImageLoader:base:1.0.1'//必选
-        complie 'com.github.wtuadn.ImageLoader:glideloader:1.0.1'//二选一
-        complie 'com.github.wtuadn.ImageLoader:frescoloader:1.0.1'//二选一
+        complie 'com.github.wtuadn.ImageLoader:base:1.0.3'//必选
+        complie 'com.github.wtuadn.ImageLoader:glideloader:1.0.3'//二选一
+        complie 'com.github.wtuadn.ImageLoader:frescoloader:1.0.3'//二选一
     }
 ```
 <br><br>

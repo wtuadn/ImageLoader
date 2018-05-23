@@ -5,7 +5,7 @@ buildscript {
     ext.buildToolsExt = '27.0.3'
     ext.minSdkExt = 14
     ext.targetSdkExt = 27
-    ext.supportLibExt = '27.0.2'
+    ext.supportLibExt = '27.1.1'
 
     repositories {
         google()
