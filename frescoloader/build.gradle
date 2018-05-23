@@ -11,6 +11,7 @@ android {
         targetSdkVersion targetSdkExt
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     buildTypes {
