@@ -88,7 +88,7 @@ public class GlideLoader implements Loader {
             if (requestBuilder == null) requestBuilder = requestManager.load(loadConfig.url);
             else requestBuilder = requestBuilder.load(loadConfig.url);
         } else if (loadConfig.file != null) {
-            if (requestBuilder == null) requestBuilder = requestManager.load(loadConfig.url);
+            if (requestBuilder == null) requestBuilder = requestManager.load(loadConfig.file);
             else requestBuilder = requestBuilder.load(loadConfig.file);
         } else if (loadConfig.resId != Integer.MIN_VALUE) {
             if (requestBuilder == null) requestBuilder = requestManager.load(loadConfig.resId);

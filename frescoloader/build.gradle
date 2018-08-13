@@ -9,8 +9,6 @@ android {
     defaultConfig {
         minSdkVersion minSdkExt
         targetSdkVersion targetSdkExt
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -27,8 +25,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':base')
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     api('com.facebook.fresco:fresco:1.8.1') {
         transitive = true
